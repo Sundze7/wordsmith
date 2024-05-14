@@ -1,15 +1,31 @@
 pipeline {
     agent any
+
+    environment{
+//         SNAPSHOT_REPO = "webapp-snapshot"
+//         RELEASE_REPO = "webapp-release"
+//         NEXUS_PORT = "8081"
+//         NEXUS_CRED = "nexus-login"
+//         DOCKER_IMG_REGISTRY = "828804287617.dkr.ecr.ca-central-1.amazonaws.com/webapp"
+    }
+
     stages {
         stage("init") {
             steps {
-                sh 'echo "init stage"'
+                script {
+                    def branchName = 'ws-api'
+                    git branch: branchName, credentialsId: 'github-token', url: 'https://github.com/Sundze7/wordsmith.git'
+                }
             }
         }
 
         stage("Build") {
+            tools {
+                jdk "jdk17"
+                maven "maven-3.9.6"
+            }
             steps {
-                sh 'echo "Build stage"'
+                sh 'mvn clean package'
             }
         }
 
