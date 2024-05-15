@@ -30,8 +30,24 @@ pipeline {
         }
 
         stage("Test") {
+            tools {
+                jdk "jdk17"
+                maven "maven-3.9.6"
+            }
             steps {
-                sh 'echo "Test stage"'
+                sh 'mvn test'
+            }
+        }
+
+        stage ("Sonar Scan") {
+            tools {
+                jdk "jdk11"
+                maven "maven-3.9.6"
+            }
+            steps {
+                withSonarQubeEnv('sonar') {
+                    sh 'mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.7.0.1746:sonar'
+                }
             }
         }
 
