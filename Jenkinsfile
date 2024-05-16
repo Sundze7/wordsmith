@@ -53,7 +53,9 @@ pipeline {
 
         stage("Quality gates") {
             steps {
-                sh 'echo "Quality gates stage"'
+                timeout(time: 4, unit: "MINUTES") {
+                    waitForQualityGate abortPipeline: true
+                }
             }
         }
 
