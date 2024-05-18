@@ -1,13 +1,13 @@
 pipeline {
-    agent any
+    agent {label 'docker'}
 
-//     environment{
-// //         SNAPSHOT_REPO = "webapp-snapshot"
-// //         RELEASE_REPO = "webapp-release"
-// //         NEXUS_PORT = "8081"
-// //         NEXUS_CRED = "nexus-login"
-// //         DOCKER_IMG_REGISTRY = "828804287617.dkr.ecr.ca-central-1.amazonaws.com/webapp"
-//     }
+    environment{
+//         SNAPSHOT_REPO = "webapp-snapshot"
+//         RELEASE_REPO = "webapp-release"
+//         NEXUS_PORT = "8081"
+//         NEXUS_CRED = "nexus-login"
+        DOCKER_IMG_REGISTRY = "828804287617.dkr.ecr.ca-central-1.amazonaws.com/ws-api"
+    }
 
     stages {
         stage("init") {
@@ -59,28 +59,54 @@ pipeline {
         //     }
         // }
 
-        stage("Store Java artifact") {
+        stage("Build docker image") {
             steps {
-                sh 'echo "Store Java artifact stage"'
-            }
-        }
-
-        stage("create docker image") {
-            steps {
-                sh 'echo "create docker image stage"'
+                script {
+                    def registry = "828804287617.dkr.ecr.ca-central-1.amazonaws.com/ws-api"
+                    def tag = getDockerTag()
+                    sh "docker build . -t ${registry}:${tag}"
+                }
             }
         }
 
         stage("push to ECR") {
             steps {
-                sh 'echo "push to ECR stage"'
-            }
-        }
-
-        stage("image scan") {
-            steps {
-                sh 'echo "image scan stage"'
+                script {
+                    withAWS(region: 'ca-central-1', credentials: 'aws_creds') {
+                        def registry = "828804287617.dkr.ecr.ca-central-1.amazonaws.com/ws-api"
+                        def tag = getDockerTag()
+                        sh "aws ecr get-login-password | docker login -u AWS --password-stdin ${DOCKER_IMG_REGISTRY}"
+                        sh "docker push ${DOCKER_IMG_REGISTRY}:${tag}" 
+                    }
+                }
             }
         }
     }
+}
+
+
+def getDockerTag() {
+     // develop=> 1.1.0.230-rc    | main => 1.1.0.200 | feature => 1.1.0.240-feature-something
+    def pom = readMavenPom(file: 'pom.xml')
+    // return functions.getDockerImageTag(pom.version)
+    def version = pom.version
+    def branch = "${env.BRANCH_NAME}"
+    def build_number = "${env.BUILD_NUMBER}"
+
+    def tag = "" 
+
+    if (branch == 'main' || branch == 'master') {
+        tag = "${version}.${build_number}"
+    } else if(branch == "develop") {
+        tag = "${version}.${build_number}-rc"
+    } else {
+        branch = branch.replace("/", "-").replace("\\", "-")
+        tag = "${version}.${build_number}-${branch}"
+    }
+
+    return tag 
+}
+
+def getRegistry() {
+    return true
 }
