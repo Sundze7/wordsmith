@@ -1,6 +1,6 @@
 pipeline {
     agent any
-    stages [
+    stages {
         stage("init") {
             steps {
                 sh 'echo "init stage"'
@@ -48,5 +48,5 @@ pipeline {
                 sh 'echo "image scan stage"'
             }
         }
-    ]
+    }
 }
