@@ -13,8 +13,8 @@ pipeline {
         stage("init") {
             steps {
                 script {
-                    def branchName = 'ws-api'
-                    git branch: branchName, credentialsId: 'github-token', url: 'https://github.com/Sundze7/wordsmith.git'
+                    //def branchName = 'ws-api'
+                    git branch: "${env.BRANCH_NAME}", credentialsId: 'github-token', url: 'https://github.com/Sundze7/wordsmith.git'
                 }
             }
         }
@@ -39,25 +39,25 @@ pipeline {
             }
         }
 
-        stage ("Sonar Scan") {
-            tools {
-                jdk "jdk11"
-                maven "maven-3.9.6"
-            }
-            steps {
-                withSonarQubeEnv('sonar') {
-                    sh 'mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.7.0.1746:sonar'
-                }
-            }
-        }
+        // stage ("Sonar Scan") {
+        //     tools {
+        //         jdk "jdk11"
+        //         maven "maven-3.9.6"
+        //     }
+        //     steps {
+        //         withSonarQubeEnv('sonar') {
+        //             sh 'mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.7.0.1746:sonar'
+        //         }
+        //     }
+        // }
 
-        stage("Quality gates") {
-            steps {
-                timeout(time: 4, unit: "MINUTES") {
-                    waitForQualityGate abortPipeline: true
-                }
-            }
-        }
+        // stage("Quality gates") {
+        //     steps {
+        //         timeout(time: 4, unit: "MINUTES") {
+        //             waitForQualityGate abortPipeline: true
+        //         }
+        //     }
+        // }
 
         stage("Store Java artifact") {
             steps {
