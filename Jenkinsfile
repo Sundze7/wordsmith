@@ -1,13 +1,13 @@
 pipeline {
     agent any
 
-    environment{
-//         SNAPSHOT_REPO = "webapp-snapshot"
-//         RELEASE_REPO = "webapp-release"
-//         NEXUS_PORT = "8081"
-//         NEXUS_CRED = "nexus-login"
-//         DOCKER_IMG_REGISTRY = "828804287617.dkr.ecr.ca-central-1.amazonaws.com/webapp"
-    }
+//     environment{
+// //         SNAPSHOT_REPO = "webapp-snapshot"
+// //         RELEASE_REPO = "webapp-release"
+// //         NEXUS_PORT = "8081"
+// //         NEXUS_CRED = "nexus-login"
+// //         DOCKER_IMG_REGISTRY = "828804287617.dkr.ecr.ca-central-1.amazonaws.com/webapp"
+//     }
 
     stages {
         stage("init") {
