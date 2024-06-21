@@ -1,11 +1,8 @@
 # Use an official Tomcat base image
 FROM tomcat:9-jdk11-openjdk
 
-# Set labels for metadata
-LABEL maintainer="keyonmwesundze@gmail.com"
+# Set the working directory inside the container
+WORKDIR /app
 
-# Remove default web applications deployed with Tomcat
-RUN rm -rf /usr/local/tomcat/webapps/*
-
-# Copy the WAR file to the webapps directory
-COPY target/*.war /usr/local/tomcat/webapps/ROOT.war
+# Copy the .jar file from the target directory to the container
+COPY target/*.jar app.jar
