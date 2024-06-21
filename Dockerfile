@@ -3,7 +3,6 @@ FROM tomcat:9-jdk11-openjdk
 
 # Set labels for metadata
 LABEL maintainer="keyonmwesundze@gmail.com"
-LABEL project="webapp-2"
 
 # Remove default web applications deployed with Tomcat
 RUN rm -rf /usr/local/tomcat/webapps/*
