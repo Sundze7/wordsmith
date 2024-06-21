@@ -1,5 +1,6 @@
 # Use an official Tomcat base image
-FROM openjdk11:jdk-11.0.11_9-alpine-slim
+# FROM tomcat:9-jdk11-openjdk
+FROM openjdk:11-jdk-slim
 
 # Set the working directory inside the container
 WORKDIR /app
