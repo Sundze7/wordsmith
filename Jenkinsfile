@@ -62,9 +62,8 @@ pipeline {
         stage("Build docker image") {
             steps {
                 script {
-                    def registry = "828804287617.dkr.ecr.ca-central-1.amazonaws.com/ws-api"
                     def tag = getDockerTag()
-                    sh "docker build . -t ${registry}:${tag}"
+                    sh "docker build . -t ${env.DOCKER_IMG_REGISTRY}:${tag}"
                 }
             }
         }
@@ -75,12 +74,53 @@ pipeline {
                     withAWS(region: 'ca-central-1', credentials: 'aws_creds') {
                         def registry = "828804287617.dkr.ecr.ca-central-1.amazonaws.com/ws-api"
                         def tag = getDockerTag()
-                        sh "aws ecr get-login-password | docker login -u AWS --password-stdin ${DOCKER_IMG_REGISTRY}"
-                        sh "docker push ${DOCKER_IMG_REGISTRY}:${tag}" 
+                        sh "aws ecr get-login-password | docker login -u AWS --password-stdin ${env.DOCKER_IMG_REGISTRY}"
+                        sh "docker push ${env.DOCKER_IMG_REGISTRY}:${tag}" 
                     }
                 }
             }
         }
+    }
+
+    post {
+
+        always{
+            withAWS(region: 'ca-central-1', credentials: "aws_creds") {
+                script{
+                    //Groovy scripting can be done here
+                    def status = currentBuild.result ?: 'SUCCESS'
+                    def subject = "${env.JOB_NAME} - Build ${status}: #${env.BUILD_NUMBER}"
+                    def message = "Build ${status}: #${env.BUILD_NUMBER}\n\nSee details at: ${env.BUILD_URL}"
+
+                    //Sending the notification to the SNS topic
+                    snsPublish topicArn:"arn:aws:sns:ca-central-1:828804287617:ws-api",
+                    subject: subject,
+                    message: message
+                }
+            }
+            // clean workspace
+            // deleteDir()
+            // sh "docker rmi ${env.DOCKER_IMG_REGISTRY}:${getDockerTag()} -f"
+        }
+
+        success{
+            //Deploy the new image
+            script{
+                def branch = "${env.BRANCH_NAME}"
+
+                if (branch == 'main' || branch == 'master') {
+                        // build job: 'cd-webapp',
+                        //     wait: false,
+                        //     parameters: [
+                        //         string(name: 'DOCKER_IMG_REGISTRY', value: '${env.DOCKER_IMG_REGISTRY}'),
+                        //         string(name: "IMAGE_TAG", value: getDockerTag())
+                        //     ]
+                }
+            }
+            
+        }
+
+        // failure{}
     }
 }
 
