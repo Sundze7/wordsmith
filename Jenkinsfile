@@ -62,8 +62,8 @@ pipeline {
         stage("Build docker image") {
             steps {
                 script {
-                    def tag = getDockerTag()
-                    sh "docker build . -t ${env.DOCKER_IMG_REGISTRY}:${tag}"
+                    // def tag = getDockerTag()
+                    sh "docker build . -t ${env.DOCKER_IMG_REGISTRY}:${latest}"
                 }
             }
         }
@@ -73,9 +73,9 @@ pipeline {
                 script {
                     withAWS(region: 'ca-central-1', credentials: 'aws_creds') {
                         def registry = "828804287617.dkr.ecr.ca-central-1.amazonaws.com/ws-db"
-                        def tag = getDockerTag()
+                        // def tag = getDockerTag()
                         sh "aws ecr get-login-password | docker login -u AWS --password-stdin ${env.DOCKER_IMG_REGISTRY}"
-                        sh "docker push ${env.DOCKER_IMG_REGISTRY}:${tag}" 
+                        sh "docker push ${env.DOCKER_IMG_REGISTRY}:${latest}" 
                     }
                 }
             }
@@ -85,28 +85,28 @@ pipeline {
 
 
 
-def getDockerTag() {
-     // develop=> 1.1.0.230-rc    | main => 1.1.0.200 | feature => 1.1.0.240-feature-something
-    // def pom = readMavenPom(file: 'pom.xml')
-    // // return functions.getDockerImageTag(pom.version)
-    // def version = pom.version
-    // def branch = "${env.BRANCH_NAME}"
-    // def build_number = "${env.BUILD_NUMBER}"
+// def getDockerTag() {
+//      // develop=> 1.1.0.230-rc    | main => 1.1.0.200 | feature => 1.1.0.240-feature-something
+//     // def pom = readMavenPom(file: 'pom.xml')
+//     // // return functions.getDockerImageTag(pom.version)
+//     // def version = pom.version
+//     // def branch = "${env.BRANCH_NAME}"
+//     // def build_number = "${env.BUILD_NUMBER}"
 
-    def tag = "" 
+//     def tag = "" 
 
-    if (branch == 'main' || branch == 'master') {
-        tag = "${version}.${build_number}"
-    } else if(branch == "develop") {
-        tag = "${version}.${build_number}-rc"
-    } else {
-        branch = branch.replace("/", "-").replace("\\", "-")
-        tag = "${version}.${build_number}-${branch}"
-    }
+//     if (branch == 'main' || branch == 'master') {
+//         tag = "${version}.${build_number}"
+//     } else if(branch == "develop") {
+//         tag = "${version}.${build_number}-rc"
+//     } else {
+//         branch = branch.replace("/", "-").replace("\\", "-")
+//         tag = "${version}.${build_number}-${branch}"
+//     }
 
-    return tag 
-}
+//     return tag 
+// }
 
-def getRegistry() {
-    return true
-}
+// def getRegistry() {
+//     return true
+// }
