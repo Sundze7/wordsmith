@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ws-web-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ws-web
+  template:
+    metadata:
+      labels:
+        app: ws-web
+    spec:
+      containers:
+        - name: ws-web
+          image: "{{ .Values.ws_web.image.repository }}:{{ .Values.ws_web.image.tag | default .Chart.AppVersion }}"
+          ports:
+          - containerPort: 80
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: ws-web-service
+spec:
+  selector:
+    app: ws-web
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: LoadBalancer
