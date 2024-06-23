@@ -10,12 +10,12 @@ pipeline {
     }
 
     stages {
-        stage('Checkout') {
+        stage("init") {
             steps {
-                // Checkout the repository using the 'checkout' step
-                checkout([$class: 'GitSCM',
-                    branches: [[name: '*/ws-db']], // Specify the branch to checkout
-                    userRemoteConfigs: [[url: 'https://github.com/Sundze7/wordsmith.git']]]) // Specify the repository URL
+                script {
+                    //def branchName = 'ws-api'
+                    git branch: "${env.BRANCH_NAME}", credentialsId: 'github-token', url: 'https://github.com/Sundze7/wordsmith.git'
+                }
             }
         }
 
