@@ -76,7 +76,7 @@ pipeline {
                         def registry = "828804287617.dkr.ecr.ca-central-1.amazonaws.com/ws-db"
                         // def tag = getDockerTag()
                         sh "aws ecr get-login-password | docker login -u AWS --password-stdin ${env.DOCKER_IMG_REGISTRY}"
-                        sh "docker push ${env.DOCKER_IMG_REGISTRY}:${tag}" 
+                        sh "docker push ${env.DOCKER_IMG_REGISTRY}:latest" 
                     }
                 }
             }
