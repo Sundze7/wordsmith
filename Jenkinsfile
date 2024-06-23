@@ -64,7 +64,9 @@ pipeline {
                 script {
                     // def tag = getDockerTag()
                     // sh "docker build . -t ${env.DOCKER_IMG_REGISTRY}:${latest}"
-                    docker.build('postgres:10.0-alpine')
+                    def image = 'postgres:10.0-alpine'
+                    // docker.build(${image})
+                    sh "docker build . -t ${image}"
                 }
             }
         }
@@ -76,7 +78,7 @@ pipeline {
                         def registry = "828804287617.dkr.ecr.ca-central-1.amazonaws.com/ws-db"
                         // def tag = getDockerTag()
                         sh "aws ecr get-login-password | docker login -u AWS --password-stdin ${env.DOCKER_IMG_REGISTRY}"
-                        docker.image('postgres:10.0-alpine').push('latest') 
+                        sh "docker push ${image}" 
                     }
                 }
             }
