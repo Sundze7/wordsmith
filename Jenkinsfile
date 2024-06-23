@@ -7,6 +7,7 @@ pipeline {
 //         NEXUS_PORT = "8081"
 //         NEXUS_CRED = "nexus-login"
         DOCKER_IMG_REGISTRY = "828804287617.dkr.ecr.ca-central-1.amazonaws.com/ws-db"
+        image = 'postgres:10.0-alpine'
     }
 
     stages {
@@ -64,9 +65,8 @@ pipeline {
                 script {
                     // def tag = getDockerTag()
                     // sh "docker build . -t ${env.DOCKER_IMG_REGISTRY}:${latest}"
-                    def image = 'postgres:10.0-alpine'
                     // docker.build(${image})
-                    sh "docker build . -t ${image}"
+                    sh "docker build . -t ${env.image}"
                 }
             }
         }
@@ -78,7 +78,7 @@ pipeline {
                         def registry = "828804287617.dkr.ecr.ca-central-1.amazonaws.com/ws-db"
                         // def tag = getDockerTag()
                         sh "aws ecr get-login-password | docker login -u AWS --password-stdin ${env.DOCKER_IMG_REGISTRY}"
-                        sh "docker push ${image}" 
+                        sh "docker push ${env.image}" 
                     }
                 }
             }
