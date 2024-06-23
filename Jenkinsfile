@@ -87,11 +87,11 @@ pipeline {
 
 def getDockerTag() {
      // develop=> 1.1.0.230-rc    | main => 1.1.0.200 | feature => 1.1.0.240-feature-something
-    def pom = readMavenPom(file: 'pom.xml')
-    // return functions.getDockerImageTag(pom.version)
-    def version = pom.version
-    def branch = "${env.BRANCH_NAME}"
-    def build_number = "${env.BUILD_NUMBER}"
+    // def pom = readMavenPom(file: 'pom.xml')
+    // // return functions.getDockerImageTag(pom.version)
+    // def version = pom.version
+    // def branch = "${env.BRANCH_NAME}"
+    // def build_number = "${env.BUILD_NUMBER}"
 
     def tag = "" 
 
