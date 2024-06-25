@@ -60,7 +60,7 @@ pipeline {
         //     }
         // }
 
-        stage("Build docker image") {
+        stage("Build docker image and npm test") {
             steps {
                 script {
                     // def tag = getDockerTag()
