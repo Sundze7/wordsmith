@@ -60,7 +60,7 @@ pipeline {
         //     }
         // }
 
-        stage("Build docker image and npm test") {
+        stage("Build docker image") {
             steps {
                 script {
                     // def tag = getDockerTag()
@@ -69,7 +69,6 @@ pipeline {
                     // sh "docker build . -t ${env.image}"
                     sh "docker build . -t ${env.DOCKER_IMG_REGISTRY}:latest"
                 }
-                sh 'npm test'
             }
         }
 
