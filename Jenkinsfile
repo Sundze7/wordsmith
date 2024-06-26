@@ -1,6 +1,7 @@
 pipeline {
     agent any
     environment {
+        BRANCH_NAME = "master"
         AWS_ACCESS_KEY_ID = credentials('ACCESS_KEY_ID')
         AWS_SECRET_ACCESS_KEY = credentials('SECRET_ACCESS_KEY')
         AWS_DEFAULT_REGION = "ca-central-1"
