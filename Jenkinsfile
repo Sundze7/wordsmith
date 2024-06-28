@@ -30,7 +30,7 @@ pipeline {
             steps {
                 script {
                     dir('kubernetes') {
-                        sh "aws eks update-kubeconfig --name ws-eks-cluster --region ca-central-1"
+                        sh "aws eks update-kubeconfig --name myjenkins-server-eks-cluster --region ca-central-1"
                         sh "kubectl get ns"
                         sh "helm install helm-ws ./ws-chart"
                     }
