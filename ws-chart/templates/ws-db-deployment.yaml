@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ws-db-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ws-db
+  template:
+    metadata:
+      labels:
+        app: ws-db
+    spec:
+      containers:
+        - name: postgres-db
+          image: "{{.Values.ws_db.image.repository}}:{{.Values.ws_db.image.tag | default .Chart.AppVersion}}"
+          ports:
+          - containerPort: 5432
+          env:
+          - name: POSTGRES_USER
+            valueFrom:
+              secretKeyRef:
+                name: ws-db-secret
+                key: username
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: ws-db-secret
+                key: password
+          - name: POSTGRES_DB
+            valueFrom:
+              configMapKeyRef:
+                name: ws-db-configmap
+                key: database-name
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: ws-db-service
+spec:
+  selector:
+    app: ws-db
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432
