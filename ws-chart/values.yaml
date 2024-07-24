@@ -7,17 +7,17 @@ replicaCount: 1
 ws_api:
   image:
     repository: 828804287617.dkr.ecr.ca-central-1.amazonaws.com/ws-api
-    tag: ""
+    tag: "1.0-SNAPSHOT.3-ws-api"
 
 ws_web:
   image:
     repository: 828804287617.dkr.ecr.ca-central-1.amazonaws.com/ws-web
-    tag: ""
+    tag: "latest"
 
 ws_db:
   image:
     repository: 828804287617.dkr.ecr.ca-central-1.amazonaws.com/ws-db
-    tag: "10.0-alpine"
+    tag: "latest"
 
 # image:
 #   repository: nginx
