@@ -17,6 +17,28 @@ spec:
           image: "{{.Values.ws_api.image.repository}}:{{.Values.ws_api.image.tag | default .Chart.AppVersion}}"
           ports:
           - containerPort: 8080
+          env:
+          - name: DB_HOST
+            value: ws-db-service
+          - name: DB_PORT
+            value: "5432"
+          - name: DB_NAME
+            valueFrom:
+              configMapKeyRef:
+                name: ws-db-configmap
+                key: database-name
+          - name: DB_USER
+            valueFrom:
+              secretKeyRef:
+                name: ws-db-secret
+                key: username
+          - name: DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: ws-db-secret
+                key: password
+      # imagePullSecrets:
+      # - name: regcred
 
 ---
 
