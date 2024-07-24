@@ -17,6 +17,13 @@ spec:
           image: "{{ .Values.ws_web.image.repository }}:{{ .Values.ws_web.image.tag | default .Chart.AppVersion }}"
           ports:
           - containerPort: 80
+          env:
+          - name: API_HOST
+            value: ws-api-service  # Name of the API service
+          - name: API_PORT
+            value: "8080"
+      # imagePullSecrets:
+      # - name: regcred
 
 ---
 
@@ -31,4 +38,5 @@ spec:
     - protocol: TCP
       port: 80
       targetPort: 80
+      nodePort: 30000
   type: LoadBalancer
