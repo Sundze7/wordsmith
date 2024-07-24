@@ -16,35 +16,35 @@ pipeline {
             }
         }
 
-        // stage("Create an EKS Cluster") {
-        //     steps {
-        //         script {
-        //             dir('terraform') {
-        //                 sh "terraform init"
-        //                 sh "terraform apply -auto-approve"
-        //             }
-        //         }
-        //     }
-        // }
-        // stage("Deploy Helm Chart to EKS") {
-        //     steps {
-        //         script {
-        //             dir('..') {
-        //                 sh "aws eks update-kubeconfig --name myjenkins-server-eks-cluster --region ca-central-1"
-        //                 sh "kubectl get ns"
-        //                 sh "helm install helm-ws ${WORKSPACE}/ws-chart"
-        //             }
-        //         }
-        //     }
-        // }
-        stage("Destroy Resources") {
+        stage("Create an EKS Cluster") {
             steps {
                 script {
                     dir('terraform') {
-                        sh "terraform destroy -auto-approve"
+                        sh "terraform init"
+                        sh "terraform apply -auto-approve"
                     }
                 }
             }
         }
+        stage("Deploy Helm Chart to EKS") {
+            steps {
+                script {
+                    dir('..') {
+                        sh "aws eks update-kubeconfig --name myjenkins-server-eks-cluster --region ca-central-1"
+                        sh "kubectl get ns"
+                        sh "helm install helm-ws ${WORKSPACE}/ws-chart"
+                    }
+                }
+            }
+        }
+        // stage("Destroy Resources") {
+        //     steps {
+        //         script {
+        //             dir('terraform') {
+        //                 sh "terraform destroy -auto-approve"
+        //             }
+        //         }
+        //     }
+        // }
     }
 }
