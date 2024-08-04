@@ -3,4 +3,5 @@ kind: ConfigMap
 metadata:
   name: ws-db-configmap
 data:
-  database-name: ws_db
+  database-name: postgres
+  # database-name: ws_db
