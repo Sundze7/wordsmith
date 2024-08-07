@@ -1,27 +1,29 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ws-web-deployment
+  name: frontend
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: ws-web
+      app: frontend
   template:
     metadata:
       labels:
-        app: ws-web
+        app: frontend
     spec:
       containers:
-        - name: ws-web
+        - name: frontend
           image: "{{ .Values.ws_web.image.repository }}:{{ .Values.ws_web.image.tag | default .Chart.AppVersion }}"
           ports:
           - containerPort: 80
           env:
-          - name: API_HOST
-            value: ws-api-service  # Name of the API service
-          - name: API_PORT
-            value: "8080"
+          # - name: API_HOST
+          #   value: ws-api-service  # Name of the API service
+          # - name: API_PORT
+          #   value: "8080"
+          - name: API_URL
+            value: http://backend:8080
       # imagePullSecrets:
       # - name: regcred
 
@@ -30,13 +32,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: ws-web-service
+  name: frontend
 spec:
   selector:
-    app: ws-web
+    app: frontend
   ports:
     - protocol: TCP
       port: 80
       targetPort: 80
-      nodePort: 30000
   type: LoadBalancer

@@ -1,42 +1,48 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ws-api-deployment
+  name: backend
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: ws-api
+      app: backend
   template:
     metadata:
       labels:
-        app: ws-api
+        app: backend
     spec:
       containers:
-        - name: ws-api
+        - name: backend
           image: "{{.Values.ws_api.image.repository}}:{{.Values.ws_api.image.tag | default .Chart.AppVersion}}"
           ports:
           - containerPort: 8080
           env:
-          - name: DB_HOST
-            value: ws-db-service
-          - name: DB_PORT
-            value: "5432"
-          - name: DB_NAME
-            valueFrom:
-              configMapKeyRef:
-                name: ws-db-configmap
-                key: database-name
-          - name: DB_USER
-            valueFrom:
-              secretKeyRef:
-                name: ws-db-secret
-                key: username
-          - name: DB_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: ws-db-secret
-                key: password
+          - name: SPRING_DATASOURCE_URL
+            value: "jdbc:postgresql://db:5432/postgres"
+          - name: SPRING_DATASOURCE_USERNAME
+            value: "postgres"
+          - name: SPRING_DATASOURCE_PASSWORD
+            value: "ZXhhbXBsZQ=="
+          # - name: DB_HOST
+          #   value: ws-db-service
+          # - name: DB_PORT
+          #   value: "5432"
+          # - name: DB_NAME
+          #   valueFrom:
+          #     configMapKeyRef:
+          #       name: ws-db-configmap
+          #       key: database-name
+          # - name: DB_USER
+          #   valueFrom:
+          #     secretKeyRef:
+          #       name: ws-db-secret
+          #       key: username
+          # - name: DB_PASSWORD
+          #   valueFrom:
+          #     secretKeyRef:
+          #       name: ws-db-secret
+          #       key: password
       # imagePullSecrets:
       # - name: regcred
 
@@ -45,10 +51,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: ws-api-service
+  name: backend
 spec:
   selector:
-    app: ws-api
+    app: backend
   ports:
     - protocol: TCP
       port: 8080

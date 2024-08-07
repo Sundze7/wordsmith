@@ -18,7 +18,13 @@ ws_db:
   image:
     repository: 828804287617.dkr.ecr.ca-central-1.amazonaws.com/ws-db
     tag: "latest"
-
+  env:
+    POSTGRES_USER: postgres
+    POSTGRES_PASSWORD: ZXhhbXBsZQ==
+    POSTGRES_DB: postgres
+  persistence:
+    enabled: true
+    size: 50Mi
 # image:
 #   repository: nginx
 #   pullPolicy: IfNotPresent
