@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: backend
+  name: api
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: backend
+      app: api
   template:
     metadata:
       labels:
-        app: backend
+        app: api
     spec:
       containers:
-        - name: backend
+        - name: api
           image: "{{.Values.ws_api.image.repository}}:{{.Values.ws_api.image.tag | default .Chart.AppVersion}}"
           ports:
           - containerPort: 8080
@@ -51,10 +51,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: backend
+  name: api
 spec:
   selector:
-    app: backend
+    app: api
   ports:
     - protocol: TCP
       port: 8080
