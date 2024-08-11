@@ -22,9 +22,6 @@ ws_db:
     POSTGRES_USER: postgres
     POSTGRES_PASSWORD: ZXhhbXBsZQ==
     POSTGRES_DB: postgres
-  persistence:
-    enabled: true
-    size: 50Mi
 # image:
 #   repository: nginx
 #   pullPolicy: IfNotPresent
