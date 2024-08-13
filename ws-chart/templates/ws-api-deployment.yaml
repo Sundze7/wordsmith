@@ -23,7 +23,7 @@ spec:
           - name: SPRING_DATASOURCE_USERNAME
             value: "postgres"
           - name: SPRING_DATASOURCE_PASSWORD
-            value: "ZXhhbXBsZQ=="
+            value: "example"
           # - name: DB_HOST
           #   value: ws-db-service
           # - name: DB_PORT
