@@ -5,6 +5,9 @@ FROM postgres:10.0-alpine
 # ENV POSTGRES_USER=myuser
 # ENV POSTGRES_PASSWORD=mypassword
 
+# Remove any existing pg_hba.conf if it exists
+RUN rm -f /var/lib/postgresql/data/pg_hba.conf
+
 # Copy custom pg_hba.conf file
 COPY pg_hba.conf /var/lib/postgresql/data/pg_hba.conf
 
