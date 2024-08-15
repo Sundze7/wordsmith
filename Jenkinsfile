@@ -31,8 +31,19 @@ pipeline {
                     dir('..') {
                         sh "aws eks update-kubeconfig --name myjenkins-server-eks-cluster --region ca-central-1"
                         sh "kubectl get ns"
-                        sh "helm uninstall helm-ws ${WORKSPACE}/ws-chart"
-                        sh "helm install helm-ws ${WORKSPACE}/ws-chart"
+                         // Define Helm release name
+                        def releaseName = "helm-ws"
+
+                        // Check if the Helm release already exists
+                        def releaseExists = sh(script: "helm list --all-namespaces | grep ${releaseName} || true", returnStatus: true) == 0
+
+                        if (releaseExists) {
+                            // If the release exists, upgrade it
+                            sh "helm upgrade ${releaseName} ${WORKSPACE}/ws-chart"
+                        } else {
+                            // If the release does not exist, install it
+                            sh "helm install ${releaseName} ${WORKSPACE}/ws-chart"
+                        }
                     }
                 }
             }
