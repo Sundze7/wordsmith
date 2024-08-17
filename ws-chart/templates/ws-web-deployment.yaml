@@ -19,10 +19,10 @@ spec:
           - containerPort: 80
           env:
           - name: API_URL
-              valueFrom:
-                secretKeyRef:
-                  name: ws-secrets
-                  key: API_URL
+            valueFrom:
+              secretKeyRef:
+                name: ws-secrets
+                key: API_URL
 
 ---
 
