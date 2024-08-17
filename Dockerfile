@@ -5,9 +5,11 @@ FROM postgres:10.0-alpine
 # ENV POSTGRES_USER=myuser
 # ENV POSTGRES_PASSWORD=mypassword
 
-# Optionally, you can copy any additional scripts or configurations
-# into the container if needed
-# COPY myscript.sh /docker-entrypoint-initdb.d/
+# Copy custom pg_hba.conf file
+COPY pg_hba.conf /var/lib/postgresql/data/pg_hba.conf
+
+# Optionally, you can copy the SQL script into the container
+COPY words.sql /docker-entrypoint-initdb.d/
 
 # Expose the default Postgres port (5432)
 EXPOSE 5432
