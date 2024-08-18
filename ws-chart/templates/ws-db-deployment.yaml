@@ -19,20 +19,26 @@ spec:
           - containerPort: 5432
           env:
             - name: POSTGRES_USER
-              valueFrom:
-                secretKeyRef:
-                  name: ws-secrets
-                  key: POSTGRES_USER
+              value: "postgres"
             - name: POSTGRES_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: ws-secrets
-                  key: POSTGRES_PASSWORD
+              value: "example"
             - name: POSTGRES_DB
-              valueFrom:
-                secretKeyRef:
-                  name: ws-secrets
-                  key: POSTGRES_DB
+              value: "postgres"
+            # - name: POSTGRES_USER
+            #   valueFrom:
+            #     secretKeyRef:
+            #       name: ws-secrets
+            #       key: POSTGRES_USER
+            # - name: POSTGRES_PASSWORD
+            #   valueFrom:
+            #     secretKeyRef:
+            #       name: ws-secrets
+            #       key: POSTGRES_PASSWORD
+            # - name: POSTGRES_DB
+            #   valueFrom:
+            #     secretKeyRef:
+            #       name: ws-secrets
+            #       key: POSTGRES_DB
 
 ---
 
