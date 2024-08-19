@@ -27,67 +27,67 @@ pipeline {
             }
         }
 
-        stage("Setup ArgoCD") {
-            steps {
-                script {
-                    sh "aws eks update-kubeconfig --name myjenkins-server-eks-cluster --region ca-central-1"
+        // stage("Setup ArgoCD") {
+        //     steps {
+        //         script {
+        //             sh "aws eks update-kubeconfig --name myjenkins-server-eks-cluster --region ca-central-1"
 
-                    // Create ArgoCD namespace
-                    sh "kubectl create namespace argocd || true"
+        //             // Create ArgoCD namespace
+        //             sh "kubectl create namespace argocd || true"
 
-                    // Install ArgoCD using manifests
-                    sh "kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml"
+        //             // Install ArgoCD using manifests
+        //             sh "kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml"
 
-                    // Expose ArgoCD server as LoadBalancer for browser access
-                    sh '''
-                    kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}'
-                    '''
+        //             // Expose ArgoCD server as LoadBalancer for browser access
+        //             sh '''
+        //             kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}'
+        //             '''
 
-                    // Wait for ArgoCD components to be ready
-                    sh "kubectl rollout status deploy/argocd-server -n argocd"
-                }
-            }
-        }
+        //             // Wait for ArgoCD components to be ready
+        //             sh "kubectl rollout status deploy/argocd-server -n argocd"
+        //         }
+        //     }
+        // }
 
-        stage("Configure ArgoCD") {
-            steps {
-                script {
-                    // Get ArgoCD initial admin password from the server pod's name
-                    sh "aws eks update-kubeconfig --name myjenkins-server-eks-cluster --region ca-central-1"
-                    sh '''
-                    ARGOCD_PASSWORD=$(kubectl get pods -n argocd -l app.kubernetes.io/name=argocd-server -o jsonpath='{.items[0].metadata.name}')
-                    argocd login --insecure --username admin --password $ARGOCD_PASSWORD --grpc-web argocd-server.argocd.svc.cluster.local:443
-                    '''
+        // stage("Configure ArgoCD") {
+        //     steps {
+        //         script {
+        //             // Get ArgoCD initial admin password from the server pod's name
+        //             sh "aws eks update-kubeconfig --name myjenkins-server-eks-cluster --region ca-central-1"
+        //             sh '''
+        //             ARGOCD_PASSWORD=$(kubectl get pods -n argocd -l app.kubernetes.io/name=argocd-server -o jsonpath='{.items[0].metadata.name}')
+        //             argocd login --insecure --username admin --password $ARGOCD_PASSWORD --grpc-web argocd-server.argocd.svc.cluster.local:443
+        //             '''
 
-                    // Register EKS cluster with ArgoCD
-                    sh "argocd cluster add \$(kubectl config current-context)"
+        //             // Register EKS cluster with ArgoCD
+        //             sh "argocd cluster add \$(kubectl config current-context)"
 
-                    // Create an ArgoCD application to sync the Git repository with the cluster
-                    sh '''
-                    argocd app create wordsmith-app \
-                        --repo https://github.com/Sundze7/wordsmith.git \
-                        --path ws-chart \
-                        --dest-server https://kubernetes.default.svc \
-                        --dest-namespace default
-                    '''
+        //             // Create an ArgoCD application to sync the Git repository with the cluster
+        //             sh '''
+        //             argocd app create wordsmith-app \
+        //                 --repo https://github.com/Sundze7/wordsmith.git \
+        //                 --path ws-chart \
+        //                 --dest-server https://kubernetes.default.svc \
+        //                 --dest-namespace default
+        //             '''
 
-                    // Sync the application
-                    sh "argocd app sync wordsmith-app"
-                }
-            }
-        }
+        //             // Sync the application
+        //             sh "argocd app sync wordsmith-app"
+        //         }
+        //     }
+        // }
         
-        stage("Display ArgoCD Access URL") {
-            steps {
-                script {
-                    // Get the External IP of the ArgoCD server and display it
-                    sh '''
-                    EXTERNAL_IP=$(kubectl get svc argocd-server -n argocd -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-                    echo "Access ArgoCD at: https://$EXTERNAL_IP"
-                    '''
-                }
-            }
-        }
+        // stage("Display ArgoCD Access URL") {
+        //     steps {
+        //         script {
+        //             // Get the External IP of the ArgoCD server and display it
+        //             sh '''
+        //             EXTERNAL_IP=$(kubectl get svc argocd-server -n argocd -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+        //             echo "Access ArgoCD at: https://$EXTERNAL_IP"
+        //             '''
+        //         }
+        //     }
+        // }
 
         stage("Deploy Helm Chart to EKS") {
             steps {
