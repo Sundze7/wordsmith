@@ -1,0 +1,19 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ws-app
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/Sundze7/wordsmith.git
+    targetRevision: HEAD
+    path: config
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: ws-app
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
+    automated: true
+    prune: true
