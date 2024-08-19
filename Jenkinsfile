@@ -15,7 +15,7 @@ pipeline {
                 }
             }
         }
-        
+
         stage("Create an EKS Cluster") {
             steps {
                 script {
@@ -59,7 +59,7 @@ pipeline {
                     '''
 
                     // Register EKS cluster with ArgoCD
-                    sh "argocd cluster add $(kubectl config current-context)"
+                    sh "argocd cluster add \$(kubectl config current-context)"
 
                     // Create an ArgoCD application to sync the Git repository with the cluster
                     sh '''
