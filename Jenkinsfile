@@ -53,6 +53,7 @@ pipeline {
             steps {
                 script {
                     // Get ArgoCD initial admin password from the server pod's name
+                    sh "aws eks update-kubeconfig --name myjenkins-server-eks-cluster --region ca-central-1"
                     sh '''
                     ARGOCD_PASSWORD=$(kubectl get pods -n argocd -l app.kubernetes.io/name=argocd-server -o jsonpath='{.items[0].metadata.name}')
                     argocd login --insecure --username admin --password $ARGOCD_PASSWORD --grpc-web argocd-server.argocd.svc.cluster.local:443
