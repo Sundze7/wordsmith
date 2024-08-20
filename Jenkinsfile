@@ -16,16 +16,16 @@ pipeline {
             }
         }
 
-        stage("Create an EKS Cluster") {
-            steps {
-                script {
-                    dir('terraform') {
-                        sh "terraform init"
-                        sh "terraform apply -auto-approve"
-                    }
-                }
-            }
-        }
+        // stage("Create an EKS Cluster") {
+        //     steps {
+        //         script {
+        //             dir('terraform') {
+        //                 sh "terraform init"
+        //                 sh "terraform apply -auto-approve"
+        //             }
+        //         }
+        //     }
+        // }
 
         // stage("Setup ArgoCD") {
         //     steps {
@@ -89,27 +89,27 @@ pipeline {
         //     }
         // }
 
-        stage("Deploy Helm Chart to EKS") {
-            steps {
-                script {
-                    dir('..') {
-                        sh "aws eks update-kubeconfig --name myjenkins-server-eks-cluster --region ca-central-1"
-                        sh "kubectl get ns"
-                        // sh "helm uninstall helm-ws"
-                        sh "helm install helm-ws ${WORKSPACE}/ws-chart"
-                    }
-                }
-            }
-        }
-
-        // stage("Destroy Resources") {
+        // stage("Deploy Helm Chart to EKS") {
         //     steps {
         //         script {
-        //             dir('terraform') {
-        //                 sh "terraform destroy --auto-approve"
+        //             dir('..') {
+        //                 sh "aws eks update-kubeconfig --name myjenkins-server-eks-cluster --region ca-central-1"
+        //                 sh "kubectl get ns"
+        //                 // sh "helm uninstall helm-ws"
+        //                 sh "helm install helm-ws ${WORKSPACE}/ws-chart"
         //             }
         //         }
         //     }
         // }
+
+        stage("Destroy Resources") {
+            steps {
+                script {
+                    dir('terraform') {
+                        sh "terraform destroy --auto-approve"
+                    }
+                }
+            }
+        }
     }
 }
