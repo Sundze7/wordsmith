@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: https://github.com/Sundze7/wordsmith.git
     targetRevision: HEAD
-    path: config
+    path: ./ws-chart
   destination:
     server: https://kubernetes.default.svc
     namespace: ws-app
